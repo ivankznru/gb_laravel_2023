@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\News\CategoriesController;
+use App\Http\Controllers\News\NewsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,49 +16,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return
-        "<H1>Lesson #1</H1>
-        <ul>
-            <li><a href='/profile/'>Profile</a></li>
-            <li><a href='/about/'>About us</a></li>
-            <li><a href='/news/'>News</a></li>
-        </ul>";
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/auth', [HomeController::class, 'auth'])->name('auth');
+Route::post('/auth', [HomeController::class, 'auth'])->name('auth');
+Route::get('/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
+Route::post('/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
 
-Route::get('/about/', function () {
-    return "
-    <H1>About us</H1>
-    Coming soon...";
-});
-
-
-Route::get('/profile/', function () {
-
-    $userName = "<Unregistered \"User\">";
-    return "<H1>Profile</H1>
-    Greetings, " . htmlspecialchars($userName) . "!";
-});
-
-Route::get('/news', function () {
-    return
-        "<H1>Our news</H1>
-        <ul>
-            <li><a href='/news/1'>News #1</a></li>
-            <li><a href='/news/11'>News #11</a></li>
-            <li><a href='/news/123'>News #123</a></li>
-        </ul>";
-});
-
-Route::get('/news/{newsElement}', function (string $newsElement) {
-    $newsElementId = intval($newsElement);
-    if ($newsElementId <= 0) {
-        return "<i>Not found</i>";
-    }
-
-    return "
-    <H1>News #" . $newsElementId . "</H1>
-    Some texts about news #" . $newsElementId . "...";
-});
-
-
+Route::name('news.')
+    ->prefix('news')
+    ->group(function () {
+        Route::get('/', [CategoriesController::class, 'index'])->name('index');
+        Route::get('/categories/{slug}', [NewsController::class, 'listCategory'])->name('category');
+        Route::get('/articles/{slug}', [NewsController::class, 'show'])->name('detail');
+    });
