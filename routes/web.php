@@ -17,10 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/auth', [HomeController::class, 'auth'])->name('auth');
-Route::post('/auth', [HomeController::class, 'auth'])->name('auth');
-Route::get('/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
-Route::post('/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
+Route::match(['get', 'post'],'/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
 
 Route::name('news.')
     ->prefix('news')
@@ -29,3 +26,7 @@ Route::name('news.')
         Route::get('/categories/{slug}', [NewsController::class, 'listCategory'])->name('category');
         Route::get('/articles/{slug}', [NewsController::class, 'show'])->name('detail');
     });
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

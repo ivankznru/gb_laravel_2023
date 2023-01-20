@@ -12,6 +12,7 @@ class NewsCategories extends StaticArrayDataProvider
         ['id' => '3', 'title' => 'Sport',],
         ['id' => '4', 'title' => 'Travel',],
         ['id' => '5', 'title' => 'Health',],
+        ['id' => '6', 'title' => 'A New and Empty Category',],
 
     ];    
     public function __construct()

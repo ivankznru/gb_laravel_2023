@@ -10,11 +10,11 @@ use App\Models\NewsCategories;
 
 class CategoriesController extends Controller
 {
-    public function index()
+    public function index(NewsCategories $newsCategories)
     {
 
-        $categories = (new NewsCategories)->getList();
-        if ($categories === null) {
+        $categories = $newsCategories->getList();
+        if (empty($categories)) {
             return view('notFound');
         }
         return view('news.index')->with('categories', $categories);

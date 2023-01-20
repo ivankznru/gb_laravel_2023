@@ -11,23 +11,23 @@ use App\Models\News;
 
 class NewsController extends Controller
 {
-    public function listCategory($categorySlug)
+    public function listCategory($categorySlug, NewsCategories $newsCategories)
     {
-        $category = (new NewsCategories)->getBySlug($categorySlug);
+        $category = $newsCategories->getBySlug($categorySlug);
         if ($category === null) {
             return view('notFound');
         }
         $news =  (new News())->listByCategorySlug($categorySlug);
         if ($news === null) {
-            return view('notFound');
+            $news = [];
         }
 
         return view('news.categoryDetail')
             ->with('news', $news)->with('category', $category);
     }
-    public function show(string $slug)
+    public function show(string $slug, News $news)
     {
-        $newsItem = (new News())->getBySlug($slug);
+        $newsItem = $news->getBySlug($slug);
         if ($newsItem === null) {
             return view('notFound');
         }
