@@ -13,7 +13,11 @@
                 <div class="card">
                     <div class="card-header">{{ __($newsItem['title']) }}</div>
                     <div class="card-body">
+                        @if ($newsItem['isPrivate']!==true)
                         {{ $newsItem['text'] }}
+                        @else
+                        <i>-- This is a PRIVATE news item. The content is hidden --</i>
+                        @endif
                     </div>
                 </div>
             </div>

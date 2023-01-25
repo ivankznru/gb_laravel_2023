@@ -5,83 +5,49 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\News;
+use App\Models\NewsCategories;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class NewsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function create(Request $request,  NewsCategories $newsCategories, News $newsList)
     {
-        //
+
+        if ($request->isMethod('post')) {
+            //TODO добавить новость в хранилище, прочитать старые новости, добавить новую в конце и сохранить обратно
+            $data = $request->except("_token");
+            $data["isPrivate"] = (array_key_exists("isPrivate", $data) && (intval($data["isPrivate"]) == 1));
+            $data['slug'] = Str::slug($data['title']);
+            $news = $newsList->getList();
+            $news[] = $data;
+            Storage::disk('local')->put('news.json', json_encode($news, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            Storage::disk('local')->put('newsCategories.json', json_encode($newsCategories->getList(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
+            return redirect()->route('news.detail', $data['slug']);
+        }
+        return view('admin.news.create', [
+            'categories' => $newsCategories->getList()
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function download(Request $request,  NewsCategories $newsCategories, News $newsList)
     {
-        //
-    }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+        if ($request->isMethod('post')) {
+            $data = $request->except("_token");
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+            $news =  $newsList->listByCategoryId($data['categoryId']);
+            if ($news === null) {
+                $news = [];
+            }
+            return response()->json($news)
+                ->header('Content-Disposition', 'attachment; filename = "news.json"')
+                ->setEncodingOptions(JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        }
+        return view('admin.news.download', [
+            'categories' => $newsCategories->getList()
+        ]);
     }
 }

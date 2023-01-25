@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\News\CategoriesController;
 use App\Http\Controllers\News\NewsController;
+use App\Http\Controllers\RequestInfoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::match(['get', 'post'],'/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
+Route::match(['get', 'post'], '/add-news-item', [HomeController::class, 'addNewsItem'])->name('add-news-item');
 
 Route::name('news.')
     ->prefix('news')
@@ -26,6 +28,36 @@ Route::name('news.')
         Route::get('/categories/{slug}', [NewsController::class, 'listCategory'])->name('category');
         Route::get('/articles/{slug}', [NewsController::class, 'show'])->name('detail');
     });
+
+Route::name('admin.')
+    ->prefix('admin')
+    ->namespace('Admin')
+    ->group(function () {
+        Route::get('/', [\App\Http\Controllers\Admin\IndexController::class, 'index'])->name('index');
+        Route::name('news.')
+        ->prefix('news')
+        ->group(function () {
+            Route::match(['get', 'post'], '/create', [\App\Http\Controllers\Admin\NewsController::class, 'create'])->name('create');
+            Route::match(['get', 'post'], '/download', [\App\Http\Controllers\Admin\NewsController::class, 'download'])->name('download');
+        });
+    });
+
+Route::name('comments.')
+    ->prefix('comments')
+    ->group(function () {
+        Route::get('/', [CommentsController::class, 'index'])->name('index');
+        Route::post('/store', [CommentsController::class, 'store'])->name('store');
+
+    });
+
+Route::name('requestInfo.')
+    ->prefix('requestInfo')
+    ->group(function () {
+        Route::get('/', [RequestInfoController::class, 'index'])->name('index');
+        Route::post('/store', [RequestInfoController::class, 'store'])->name('store');
+
+    });
+
 
 Auth::routes();
 

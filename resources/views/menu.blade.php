@@ -11,5 +11,11 @@
     <a class="nav-link" href="{{ route('register') }}">{{ __('Sign up') }}</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('add-news-item') }}">{{ __('Add news') }}</a>
+    <a class="nav-link" href="{{ route('admin.index') }}">{{ __('Admin area') }}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('comments.index') }}">{{ __('Comments') }}</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('requestInfo.index') }}">{{ __('Requests') }}</a>
 </li>
