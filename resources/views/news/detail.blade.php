@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $newsItem['title'])
+@section('title', $newsItem?$newsItem->title:"Not found")
 
 @section('menu')
     @include('menu')
@@ -11,14 +11,18 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __($newsItem['title']) }}</div>
-                    <div class="card-body">
-                        @if ($newsItem['isPrivate']!==true)
-                        {{ $newsItem['text'] }}
-                        @else
-                        <i>-- This is a PRIVATE news item. The content is hidden --</i>
-                        @endif
-                    </div>
+                    @if (!empty($newsItem))
+                        <div class="card-header">{{ __($newsItem->title) }}</div>
+                        <div class="card-body">
+                            @if ($newsItem->isPrivate !== true)
+                                {{ $newsItem->text }}
+                            @else
+                                <i>-- This is a PRIVATE news item. The content is hidden --</i>
+                            @endif
+                        </div>
+                    @else
+                        <i>The requested information was not found</i>
+                    @endif
                 </div>
             </div>
         </div>

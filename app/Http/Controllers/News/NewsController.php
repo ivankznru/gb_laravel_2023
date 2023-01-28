@@ -8,30 +8,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\NewsCategories;
 use App\Models\News;
+use Illuminate\Support\Facades\DB;
 
 class NewsController extends Controller
 {
-    public function listCategory($categorySlug, NewsCategories $newsCategories, News $newsList)
+    public function index()
     {
-        $category = $newsCategories->getBySlug($categorySlug);
-        if ($category === null) {
-            return view('notFound');
-        }
-        $news =  $newsList->listByCategorySlug($categorySlug);
-        if ($news === null) {
-            $news = [];
-        }
+        $news = DB::table('news')->get();
 
-        return view('news.categoryDetail')
-            ->with('news', $news)->with('category', $category);
+        return view('news.index')
+            ->with('news', $news);
     }
-    public function show(string $slug, News $news)
+    public function show(string $slug)
     {
-        $newsItem = $news->getBySlug($slug);
-        if ($newsItem === null) {
-            return view('notFound');
-        }
-
+        $newsItem = DB::table('news')->where('slug', '=', $slug)->first();
         return view('news.detail')->with('newsItem', $newsItem);
     }
 }

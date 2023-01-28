@@ -7,17 +7,16 @@ namespace App\Http\Controllers\News;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\NewsCategories;
+use Illuminate\Support\Facades\DB;
 
 
 class CategoriesController extends Controller
 {
     public function index(NewsCategories $newsCategories)
     {
+        $categories = DB::table('categories')->get();
 
-        $categories = $newsCategories->getList();
-        if (empty($categories)) {
-            return view('notFound');
-        }
-        return view('news.index')->with('categories', $categories);
+
+        return view('news.categories')->with('categories', $categories);
     }
 }

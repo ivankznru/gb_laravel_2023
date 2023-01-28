@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', __('News index '))
+@section('title', __('News categories'))
 
 @section('menu')
     @include('menu')
@@ -11,16 +11,15 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('News index ') }} </div>
+                    <div class="card-header">{{ __('News categories') }}</div>
                     <div class="card-body">
-                        <ul>
-                            @forelse ($news as $newsItem)
+                        <ul >
+                            @forelse($categories as $categoryItem)
                                 <li class="nav-item">
-                                    <a class="nav-link"
-                                        href="{{ route('news.detail', $newsItem->slug) }}">{{ $newsItem->title }}</a>
+                                    <a class="nav-link" href="#{{ $categoryItem->slug }}">{{ $categoryItem->title }}</a>
                                 </li>
                             @empty
-                                <li>No news</li>
+                                <li>No categories</li>
                             @endforelse
                         </ul>
                     </div>
@@ -29,3 +28,4 @@
         </div>
     </div>
 @endsection
+

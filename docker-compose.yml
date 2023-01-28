@@ -19,7 +19,7 @@ services:
         environment:
             - MYSQL_ROOT_PASSWORD=root
             - MYSQL_DATABASE=test_install
-            - MYSQL_USER=root
+            - MYSQL_USER=master
             - MYSQL_PASSWORD=root
         ports:
             - '5557:3306'

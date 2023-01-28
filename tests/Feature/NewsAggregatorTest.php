@@ -62,5 +62,4 @@ class NewsAggregatorTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('<form action="' . route('admin.news.create') . '"', false);
     }
-
 }

@@ -24,6 +24,12 @@
         <x-header></x-header>
         <x-navbar></x-navbar>
         <main class="py-4">
+            @if (session('success'))
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ session('success') }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
             @yield('content')
         </main>
         <x-footer></x-footer>
