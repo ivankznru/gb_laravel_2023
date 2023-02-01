@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $newsItem?$newsItem->title:"Not found")
+@section('title', $newsItem ? $newsItem->title : 'Not found')
 
 @section('menu')
     @include('menu')

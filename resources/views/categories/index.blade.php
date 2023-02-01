@@ -16,7 +16,8 @@
                         <ul >
                             @forelse($categories as $categoryItem)
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#{{ $categoryItem->slug }}">{{ $categoryItem->title }}</a>
+                                    <a class="nav-link"
+                                    href="{{ route('categories.detail', $categoryItem->slug) }}">{{ $categoryItem->title }}</a>
                                 </li>
                             @empty
                                 <li>No categories</li>

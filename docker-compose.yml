@@ -18,7 +18,7 @@ services:
             - '.:/app'
         environment:
             - MYSQL_ROOT_PASSWORD=root
-            - MYSQL_DATABASE=test_install
+            - MYSQL_DATABASE=test-install
             - MYSQL_USER=master
             - MYSQL_PASSWORD=root
         ports:

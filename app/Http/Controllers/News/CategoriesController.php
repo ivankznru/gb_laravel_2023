@@ -5,18 +5,24 @@ declare(strict_types=1);
 namespace App\Http\Controllers\News;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\NewsCategories;
-use Illuminate\Support\Facades\DB;
-
+use App\Models\Category;
 
 class CategoriesController extends Controller
 {
-    public function index(NewsCategories $newsCategories)
+    public function index()
     {
-        $categories = DB::table('categories')->get();
-
-
-        return view('news.categories')->with('categories', $categories);
+        $categories = Category::all();
+        return view('categories.index')->with('categories', $categories);
     }
+
+    public function show($slug) {
+
+        $category = Category::query()->where('slug', $slug)->first();
+        $news = $category->news(5);
+
+        return view('categories.detail')
+            ->with('news', $news)
+            ->with('category', $category);
+    }
+
 }

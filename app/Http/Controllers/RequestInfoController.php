@@ -4,35 +4,65 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Request_info;
+use App\QueryBuilders\RequestInfoQueryBuilder;
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RequestInfoController extends Controller
 {
-    function index() {
-        return view('requestInfo/index');
+
+    public function index(RequestInfoQueryBuilder $requestInfoQueryBuilder):View
+    {
+        return view('requestInfo.index', [
+            'requestInfo' => $requestInfoQueryBuilder->getRequestInfoWithPagination(),
+        ]);
     }
 
-    function store(Request $request) {
+    public function create(Request $request)
+    {
+        $requestInfo = new Request_info();
 
-        try {
-            // my data storage location is project_root/storage/app/requests.json file.
-            $requestInfo = Storage::disk('local')->exists('requests.json') ? json_decode(Storage::disk('local')->get('requests.json')) : [];
-
-            $inputData = $request->only(['title', 'phoneNumber', 'email', 'text']);
-
-            $inputData['datetime_submitted'] = date('Y-m-d H:i:s');
-
-            array_push($requestInfo,$inputData);
-
-            Storage::disk('local')->put('requests.json', json_encode($requestInfo));
-
-            return $inputData;
-
-        } catch(Exception $e) {
-
-            return ['error' => true, 'message' => $e->getMessage()];
-
+        if ($request->isMethod('post')) {
+            return $this->store($request, $requestInfo);
         }
+        return view('requestInfo.create', [
+            'requestInfo' => $requestInfo,
+        ]);
+
     }
+
+    public function edit(Request_info $requestInfo)
+    {
+        return view('requestInfo.create', [
+            'requestInfo' => $requestInfo,
+        ]);
+    }
+
+    public function store(Request $request, Request_info $requestInfo)
+    {
+        $successMessage = 'The requestInfos was successfully updated!';
+        if ($requestInfo->id == null) {
+            $successMessage = 'A requestInfo was added successfully!';
+        }
+
+        $requestInfo->fill($request->all());
+        $requestInfo->slug = Str::slug($requestInfo->title);
+        $requestInfo->save();
+        return redirect()->route('requestInfo.index')->with('success', $successMessage);
+    }
+
+    public function update(Request $request, Request_info $requestInfo)
+    {
+        return $this->store($request, $requestInfo);
+    }
+
+    public function delete(Request_info $requestInfo)
+    {
+        $requestInfo->delete();
+        return redirect()->route('requestInfo.index')->with('success', 'The requestInfo item was successfully deleted!');
+    }
+
+
 }

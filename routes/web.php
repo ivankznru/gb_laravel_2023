@@ -1,12 +1,15 @@
 <?php
 
-use App\Http\Controllers\Admin\IndexController;
-use App\Http\Controllers\CommentsController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\RequestInfoController;
 use App\Http\Controllers\News\CategoriesController;
 use App\Http\Controllers\News\NewsController;
-use App\Http\Controllers\RequestInfoController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Admin\IndexController as AdminIndexController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\CategoriesController as AdminCategoriesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,38 +28,64 @@ Route::match(['get', 'post'], '/add-news-item', [HomeController::class, 'addNews
 Route::name('news.')
     ->prefix('news')
     ->group(function () {
-        Route::get('/categories/', [CategoriesController::class, 'index'])->name('categories');
-        Route::get('/news/', [NewsController::class, 'index'])->name('index');
-        Route::get('/news/{slug}', [NewsController::class, 'show'])->name('detail');
+        Route::get('/', [NewsController::class, 'index'])->name('index');
+        Route::get('/{slug}', [NewsController::class, 'show'])->name('detail');
+    });
+Route::name('categories.')
+    ->prefix('categories')
+    ->group(function () {
+        Route::get('/', [CategoriesController::class, 'index'])->name('index');
+        Route::get('/{slug}', [CategoriesController::class, 'show'])->name('detail');
     });
 
 Route::name('admin.')
     ->prefix('admin')
     ->namespace('Admin')
     ->group(function () {
-        Route::get('/', [IndexController::class, 'index'])->name('index');
+        Route::get('/', [AdminIndexController::class, 'index'])->name('index');
         Route::name('news.')
-        ->prefix('news')
-        ->group(function () {
-            Route::match(['get', 'post'], '/create', [\App\Http\Controllers\Admin\NewsController::class, 'create'])->name('create');
-            Route::match(['get', 'post'], '/download', [\App\Http\Controllers\Admin\NewsController::class, 'download'])->name('download');
-        });
+            ->prefix('news')
+            ->group(function () {
+                Route::get('/', [AdminNewsController::class, 'index'])->name('index');
+                //CRUD
+                Route::match(['get', 'post'], '/create', [AdminNewsController::class, 'create'])->name('create');
+                Route::get('/edit/{news}', [AdminNewsController::class, 'edit'])->name('edit');
+                Route::post('/update/{news}', [AdminNewsController::class, 'update'])->name('update');
+                Route::delete('/delete/{news}', [AdminNewsController::class, 'delete'])->name('delete');
+            });
+            Route::name('categories.')
+            ->prefix('categories')
+            ->group(function () {
+                Route::get('/', [AdminCategoriesController::class, 'index'])->name('index');
+                //CRUD
+                Route::match(['get', 'post'], '/create', [AdminCategoriesController::class, 'create'])->name('create');
+                Route::get('/edit/{category}', [AdminCategoriesController::class, 'edit'])->name('edit');
+                Route::post('/update/{category}', [AdminCategoriesController::class, 'update'])->name('update');
+                Route::delete('/delete/{category}', [AdminCategoriesController::class, 'delete'])->name('delete');
+            });
     });
 
 Route::name('comments.')
     ->prefix('comments')
     ->group(function () {
         Route::get('/', [CommentsController::class, 'index'])->name('index');
-        Route::post('/store', [CommentsController::class, 'store'])->name('store');
-
+        //CRUD
+        Route::match(['get', 'post'], '/create', [CommentsController::class, 'create'])->name('create');
+        Route::get('/edit/{comments}', [CommentsController::class, 'edit'])->name('edit');
+        Route::post('/update/{comments}', [CommentsController::class, 'update'])->name('update');
+        Route::delete('/delete/{comments}', [CommentsController::class, 'delete'])->name('delete');
     });
+
 
 Route::name('requestInfo.')
     ->prefix('requestInfo')
     ->group(function () {
         Route::get('/', [RequestInfoController::class, 'index'])->name('index');
-        Route::post('/store', [RequestInfoController::class, 'store'])->name('store');
-
+        //CRUD
+        Route::match(['get', 'post'], '/create', [RequestInfoController::class, 'create'])->name('create');
+        Route::get('/edit/{requestInfo}', [RequestInfoController::class, 'edit'])->name('edit');
+        Route::post('/update/{requestInfo}', [RequestInfoController::class, 'update'])->name('update');
+        Route::delete('/delete/{requestInfo}', [RequestInfoController::class, 'delete'])->name('delete');
     });
 
 

@@ -13,22 +13,43 @@
                 <div class="card">
                     <div class="card-header">{{ __('Comments management ') }} </div>
                     <div class="card-body">
-                        <div class="card-body">
-                            <form action="{{url('/comments/store')}}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="newsTitle">User's name</label>
-                                    <input type="text" name="title" id="title" class="form-control" placeholder="Enter Full Name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="newsText">Comment</label>
-                                    <textarea name="text" id="text" class="form-control"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <input type="submit" class="btn btn-outline-primary" value="Save" name="submit">
-                                </div>
-                            </form>
-                        </div>
+                        <table class="table">
+
+                            <tbody>
+
+                                @forelse ($comments as $commentsItem)
+                                    <tr style="vertical-align:middle">
+                                        <th scope="row" >
+
+                                            <a class="nav-link text-secondary text-opacity-25"
+                                                href="{{ route('comments.edit', $commentsItem) }}">Пользователь:  {{ $commentsItem->title }}</a>
+                                            <a class="nav-link"
+                                            href="{{ route('comments.edit', $commentsItem) }}">{{ $commentsItem->text }}</a>
+                                            <a class="nav-link text-secondary text-opacity-25"
+                                               href="{{ route('comments.edit', $commentsItem) }}">Дата:  {{ \Carbon\Carbon::parse($commentsItem->updated_at)->format('d.m.Y H:i:s')}}</a>
+                                        </th>
+                                        <td>
+                                            <a href="{{ route('comments.edit', $commentsItem) }}" class="btn btn-success" >
+                                                Edit
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <form action="{{ route('comments.delete', $commentsItem) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input type="submit" class="btn btn-danger" value="Delete">
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td>No comments</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+
+                        {{ $comments->links() }}
                     </div>
                 </div>
             </div>

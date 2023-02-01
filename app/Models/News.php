@@ -2,53 +2,14 @@
 
 namespace App\Models;
 
-use App\Models\NewsCategories;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class News extends StaticArrayDataProvider
+class News extends Model
 {
-    protected $data = [];
-    public function __construct()
-    {        
-        $this->data = json_decode(Storage::disk('local')->get('news.json'), true);
-        if (empty($this->data)){
-            $this->data=[];
-        }
-        $this->setSlug();
-    }
-
-    /**
-     * Gets list of items by slug
-     *
-     * @param string $slug an item a slug
-     * @return array an item
-     */
-    public function listByCategoryId(string $categoryId): ?array
-    {
-        $list = [];
-        foreach ($this->data as $item) {
-            if ($item["categoryId"] == $categoryId) {
-                $list[] = $item;
-            }
-        }
-        if (count($list) == 0) {
-            return null;
-        }
-        return $list;
-    }
-    /**
-     * Gets list of items by category slug
-     *
-     * @param string $slug a category slug
-     * @return array a list of items
-     */
-    public function listByCategorySlug(string $categorySlug): ?array
-    {
-        $newsCategories = new NewsCategories();
-        $category = $newsCategories->getBySlug($categorySlug);
-        if ($category == null) {
-            return null;
-        }
-        return static::listByCategoryId($category['id']);
+    use HasFactory;
+    protected $fillable = ['title', 'text','author', 'status', 'image', 'isPrivate', 'category_id'];
+    public function category() {
+        return $this->belongsTo(Category::class, 'category_id')->first();
     }
 }

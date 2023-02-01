@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Faker;
+use App\Models\Category;
 
 
 class NewsSeeder extends Seeder
@@ -26,17 +27,23 @@ class NewsSeeder extends Seeder
 
     private function initData()
     {
+        $categories = Category::all();
+        $categoriesCount = count($categories);
+
         $this->data = [];
         $faker = Faker\Factory::create('en_GB');
         for ($i = 0; $i < 25; $i++) {
+            $newsCategory = $categories[rand(0, $categoriesCount - 1)];
             $this->data[] = [
-                'title' => $faker->realText(rand(10, 30)),
-                'text' => $faker->realText(rand(1000, 3000)),
-                'isPrivate' => false
+                'title' => "About " . $newsCategory->title . ": " . $faker->realText(rand(10, 30)),
+                'text' => "This is an article about " . $newsCategory->title . ". " . $faker->realText(rand(1000, 3000)),
+                'category_id' => $newsCategory->id,
+                'isPrivate' => false,
+                'author' => $newsCategory->author . " " . $faker->name(),
             ];
         }
     }
-    
+
     private function makeSlugs()
     {
         foreach ($this->data as $idx => $item) {

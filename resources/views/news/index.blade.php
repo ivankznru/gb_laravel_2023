@@ -23,6 +23,7 @@
                                 <li>No news</li>
                             @endforelse
                         </ul>
+                        {{ $news->links() }}
                     </div>
                 </div>
             </div>
