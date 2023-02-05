@@ -1,10 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Categories\CreateRequest;
+use App\Http\Requests\Categories\EditRequest;
 use App\QueryBuilders\CategoriesQueryBuilder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
 {
+
 
     public function index(CategoriesQueryBuilder $categoriesQueryBuilder): View
     {
@@ -26,17 +27,24 @@ class CategoriesController extends Controller
         $category = new Category();
 
         if ($request->isMethod('post')) {
-            return $this->store($request, $category);
+            $successMessage = 'The category was successfully updated!';
+            if ($category->id == null) {
+                $successMessage = 'A category was added successfully!';
+            }
+
+            $category->fill($request->all());
+            $category->slug = Str::slug($category->title);
+            $category->save();
+            return redirect()->route('admin.categories.index')->with('success', $successMessage);
         }
 
         return view('admin.categories.create', [
             'category' => $category,
         ]);
     }
-
-
-    public function store(Request $request, Category $category)
+    public function store(CreateRequest $request, Category $category)
     {
+
         $successMessage = 'The category was successfully updated!';
         if ($category->id == null) {
             $successMessage = 'A category was added successfully!';
@@ -56,15 +64,28 @@ class CategoriesController extends Controller
     }
 
 
-    public function update(Request $request, Category $category)
+    public function update(EditRequest $request, Category $category)
     {
+        $successMessage = 'The category was successfully updated!';
+        if ($category->id == null) {
+            $successMessage = 'A category was added successfully!';
+        }
 
-        return $this->store($request, $category);
+        $category->fill($request->all());
+        $category->slug = Str::slug($category->title);
+        $category->save();
+        return redirect()->route('admin.categories.index')->with('success', $successMessage);
     }
 
     public function delete(Category $category)
     {
-        $category->delete();
-        return redirect()->route('admin.categories.index')->with('success', 'The category was successfully deleted!');
+        try {
+            $category->delete();
+
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+            return \response()->json('error',400 );
+        }
     }
 }

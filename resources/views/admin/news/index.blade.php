@@ -25,20 +25,12 @@
                                                 href="{{ route('admin.news.edit', $newsItem) }}">{{ $newsItem->title }}</a>
                                         </th>
                                         <td>
-                                            <a href="{{ route('admin.news.edit', $newsItem) }}" class="btn btn-success">
-                                                Edit
-                                            </a>
+                                            <a href="{{ route('admin.news.edit', $newsItem) }}" class="btn btn-success">Edit</a>
                                         </td>
                                         <td>
-                                            <form action="{{ route('admin.news.delete', $newsItem) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <input type="submit" class="btn btn-danger" value="Delete">
-                                            </form>
+                                            <a href="javascript:;" class="btn btn-danger delete" rel="{{ $newsItem->id }}" >Delete</a>
                                         </td>
                                     </tr>
-
-
                                 @empty
                                     <tr>
                                         <td>No news</td>
@@ -54,3 +46,34 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (){
+            let elements =document.querySelectorAll(".delete");
+            elements.forEach(function (e, k){
+                e.addEventListener("click", function(){
+                    const id = this.getAttribute('rel');
+                    if(confirm(`Подтверждаете удаление записи с #ID = ${id}`)){
+                        send(`/admin/news/${id}`).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        alert("Удаление отменено");
+                    }
+                });
+            });
+        });
+
+        async function send(url){
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+
+            let result = await response.json();
+            return result.ok;
+        }
+    </script>
+@endpush

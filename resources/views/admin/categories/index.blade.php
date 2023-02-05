@@ -30,15 +30,9 @@
                                             </a>
                                         </td>
                                         <td>
-                                            <form action="{{ route('admin.categories.delete', $category) }}" method="post">
-                                                @csrf
-                                                @method('DELETE')
-                                                <input type="submit" class="btn btn-danger" value="Delete">
-                                            </form>
+                                            <a href="javascript:;" class="btn btn-danger delete" rel="{{ $category->id }}" >Delete</a>
                                         </td>
                                     </tr>
-
-
                                 @empty
                                     <tr>
                                         <td>No categories</td>
@@ -54,3 +48,34 @@
         </div>
     </div>
 @endsection
+@push('js')
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function (){
+            let elements =document.querySelectorAll(".delete");
+            elements.forEach(function (e, k){
+                e.addEventListener("click", function(){
+                    const id = this.getAttribute('rel');
+                    if(confirm(`Подтверждаете удаление записи с #ID = ${id}`)){
+                        send(`/admin/categories/${id}`).then(() => {
+                            location.reload();
+                        });
+                    } else {
+                        alert("Удаление отменено");
+                    }
+                });
+            });
+        });
+
+        async function send(url){
+            let response = await fetch(url, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+
+            let result = await response.json();
+            return result.ok;
+        }
+    </script>
+@endpush

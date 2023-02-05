@@ -1,18 +1,21 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Controllers\Admin;
 
 use App\Enums\NewsStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\News\CreateRequest;
+use App\Http\Requests\News\EditRequest;
 use App\Models\News;
 use App\QueryBuilders\CategoriesQueryBuilder;
 use App\QueryBuilders\NewsQueryBuilder;
+
+use App\Models\Category;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use App\Models\Category;
+
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Enum;
 
 class NewsController extends Controller
 {
@@ -24,19 +27,26 @@ class NewsController extends Controller
         ]);
     }
 
-
-   public function create(Request $request)
+    public function create(Request $request, News $news)
     {
-        $news = new News();
+      //  $news = new News();
 
         if ($request->isMethod('post')) {
-           return $this->store($request, $news);
-       }
+            $successMessage = 'The news item was successfully updated!';
+            if ($news->id == null) {
+                $successMessage = 'A news item was added successfully!';
+            }
+            $news->fill($request->all());
+            $news->isPrivate = isset($request->isPrivate);
+            $news->slug = Str::slug($news->title);
+            $news->save();
+            return redirect()->route('admin.news.index')->with('success', $successMessage);
+        }
 
-       return view('admin.news.create', [
+        return view('admin.news.create', [
             'news' => $news,
-           'categories' =>  Category::all(),
-           'statuses' => NewsStatus::all()
+            'categories' =>  Category::all(),
+            'statuses' => NewsStatus::all(),
         ]);
     }
 
@@ -50,8 +60,23 @@ class NewsController extends Controller
         ]);
     }
 
-    public function store(Request $request, News $news)
+    public function store(CreateRequest $request, News $news)
     {
+    //    $tableNameCategory = (new Category())->getTable();
+    //    $this->validate($request, [
+    //        'title' => 'required|min:3|max:20|unique:'.$tableNameCategory.',title',
+    //        'text' => 'required|min:3',
+    //        'author' => ['nullable', 'string', 'min:2', 'max:30'],
+    //       'status' => ['required', new Enum(NewsStatus::class)],
+    //        'image' => ['sometimes'],
+    //        'isPrivate' => 'sometimes|in:1',
+    //        'category_id' => "required|exists:{$tableNameCategory},id"
+    //    ], [], [
+    //        'title' => 'Title',
+    //        'text' => 'Text',
+    //        'category_id' => "News category"
+     //   ]);
+
         $successMessage = 'The news item was successfully updated!';
         if ($news->id == null) {
             $successMessage = 'A news item was added successfully!';
@@ -64,15 +89,29 @@ class NewsController extends Controller
     }
 
 
-    public function update(Request $request, News $news)
+    public function update(EditRequest $request, News $news)
     {
-        return $this->store($request, $news);
+     //   return $this->store($request, $news);
+        $successMessage = 'The news item was successfully updated!';
+        if ($news->id == null) {
+            $successMessage = 'A news item was added successfully!';
+        }
+        $news->fill($request->all());
+        $news->isPrivate = isset($request->isPrivate);
+        $news->slug = Str::slug($news->title);
+        $news->save();
+        return redirect()->route('admin.news.index')->with('success', $successMessage);
     }
 
     public function delete(News $news)
     {
-        $news->delete();
-        return redirect()->route('admin.news.index')->with('success', 'The news item was successfully deleted!');
-    }
+        try {
+            $news->delete();
 
+            return \response()->json('ok');
+        } catch (\Exception $exception) {
+            \Log::error($exception->getMessage(), [$exception]);
+            return \response()->json('error',400 );
+        }
+    }
 }
