@@ -14,9 +14,9 @@ class CategoriesController extends Controller
     }
 
     public function show($slug) {
-
+       
         $category = Category::query()->where('slug', $slug)->first();
-        $news = $category->news(5);
+        $news = $category->news(5);        
 
         return view('categories.detail')
             ->with('news', $news)

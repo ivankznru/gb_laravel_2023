@@ -1,11 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Requests\News;
 
 use App\Enums\NewsStatus;
 use App\Models\Category;
+use App\Models\News;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -16,7 +15,7 @@ class CreateRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -26,36 +25,18 @@ class CreateRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-
-    public function rules(): array
+    public function rules()
     {
+        $tableNameNews=(new News())->getTable();
         $tableNameCategory = (new Category())->getTable();
         return [
-            'title' => 'required|min:3|max:20|unique:'.$tableNameCategory.',title',
+            'title' => 'required|min:3|max:20|unique:'.$tableNameNews.',title',
             'text' => 'required|min:3',
             'author' => ['nullable', 'string', 'min:2', 'max:30'],
             'status' => ['required', new Enum(NewsStatus::class)],
             'image' => ['sometimes'],
             'isPrivate' => 'sometimes|in:1',
             'category_id' => "required|exists:{$tableNameCategory},id"
-        ];
-    }
-
-
-    public function getCategoryIds(): array
-    {
-        return (array) $this->validated('category_id');
-    }
-    public function attributes(): array
-    {
-        return [
-            'title' => 'наименование',
-        ];
-    }
-    public function messages(): array
-    {
-        return [
-            'required' => 'Нужно заполнить поле :attribute',
         ];
     }
 }

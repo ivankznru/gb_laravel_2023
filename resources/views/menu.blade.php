@@ -7,15 +7,24 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route('news.index') }}">{{ __('News') }}</a>
 </li>
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('login') }}">{{ __('Sign in') }}</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('register') }}">{{ __('Sign up') }}</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="{{ route('admin.index') }}">{{ __('Admin area') }}</a>
-</li>
+@guest
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('login') }}">{{ __('Sign in') }}</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('register') }}">{{ __('Sign up') }}</a>
+    </li>
+@else
+    @if (Auth::user()->isAdmin())
+        <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.index') }}">{{ __('Admin area') }}</a>
+        </li>
+    @endif
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('updateProfile') }}">Profile</a>
+    </li>
+
+@endguest
 <li class="nav-item">
     <a class="nav-link" href="{{ route('comments.index') }}">{{ __('Comments') }}</a>
 </li>

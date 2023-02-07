@@ -22,9 +22,10 @@
                     </div>
                     <div class="card-body">
                         <form
-                            action="@if (!$category->id) {{ route('admin.categories.create') }}@else{{ route('admin.categories.update', $category) }} @endif"
+                            action="@if (!$category->id) {{ route('admin.categories.store') }}@else{{ route('admin.categories.update', $category) }} @endif"
                             method="post">
                             @csrf
+                            @if($category->id) @method('PUT') @endif
                             <div class="form-group">
                                 <label for="newsTitle">Title</label>
                                 @if ($errors->has('title'))

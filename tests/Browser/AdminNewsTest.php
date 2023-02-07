@@ -6,10 +6,27 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
+use App\Models\User;
 
 class AdminNewsTest extends DuskTestCase
 {
-    //use RefreshDatabase;
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->artisan('migrate:fresh');
+        //Seed the database
+        $this->artisan('db:seed');
+
+        //Login as admin user with id=1
+        $user = User::find(1);
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/home')
+                ;
+                
+        });
+    }
+
     /**
      * A Dusk test for news.
      *

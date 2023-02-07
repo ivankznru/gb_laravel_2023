@@ -1,13 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Http\Requests\Categories;
 
-use App\Enums\NewsStatus;
 use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
 
 class EditRequest extends FormRequest
 {
@@ -16,7 +12,7 @@ class EditRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize(): bool
+    public function authorize()
     {
         return true;
     }
@@ -26,30 +22,11 @@ class EditRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-
-    public function rules(): array
+    public function rules()
     {
         $tableNameCategory = (new Category())->getTable();
         return [
             'title' => 'required|min:3|max:20|unique:'.$tableNameCategory.',title',
-            'text' => 'required|min:3',
-        ];
-    }
-
-    public function getCategoryId(): array
-    {
-        return (array) $this->validated('category_id');
-    }
-    public function attributes(): array
-    {
-        return [
-            'title' => 'наименование',
-        ];
-    }
-    public function messages(): array
-    {
-        return [
-            'required' => 'Нужно заполнить поле :attribute',
         ];
     }
 }
