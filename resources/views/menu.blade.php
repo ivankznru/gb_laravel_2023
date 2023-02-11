@@ -8,8 +8,11 @@
     <a class="nav-link" href="{{ route('news.index') }}">{{ __('News') }}</a>
 </li>
 @guest
-    <li class="nav-item">
-        <a class="nav-link" href="{{ route('login') }}">{{ __('Sign in') }}</a>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('login') }}">{{ __('Sign in') }}</a>
+</li>
+<li class="nav-item">
+        <a class="nav-link" href="{{ route('socAuth','github') }}">{{ __('Authorize via GitHub') }}</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="{{ route('register') }}">{{ __('Sign up') }}</a>

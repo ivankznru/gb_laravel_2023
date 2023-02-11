@@ -15,7 +15,7 @@ class EditRequest extends FormRequest
      *
      * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -25,7 +25,20 @@ class EditRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules()
+ //   public function rules(): array
+ //   {
+  //      return [
+  //          'category_ids' => ['required', 'array'],
+  //          'category_ids.*' => ['exists:categories,id'],
+  //          'title' => ['required', 'string', 'min:5', 'max:200'],
+  //          'author' => ['nullable', 'string', 'min:2', 'max:30'],
+  //          'status' => ['required', new Enum(NewsStatus::class)],
+  //          'image' => ['sometimes'],
+  //          'description' => ['nullable', 'string'],
+//        ];
+//    }
+
+    public function rules(): array
     {
         $tableNameNews=(new News())->getTable();
         $tableNameCategory = (new Category())->getTable();
@@ -37,6 +50,25 @@ class EditRequest extends FormRequest
             'image' => ['sometimes'],
             'isPrivate' => 'sometimes|in:1',
             'category_id' => "required|exists:{$tableNameCategory},id"
+        ];
+    }
+
+
+    public function getCategoryIds(): array
+    {
+        return (array) $this->validated('category_id');
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'title' => 'наименование',
+        ];
+    }
+    public function messages(): array
+    {
+        return [
+            'required' => 'Нужно заполнить поле :attribute',
         ];
     }
 }

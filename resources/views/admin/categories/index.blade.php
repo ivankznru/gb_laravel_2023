@@ -38,6 +38,7 @@
                                         </td>
                                     </tr>
 
+
                                 @empty
                                     <tr>
                                         <td>No categories</td>

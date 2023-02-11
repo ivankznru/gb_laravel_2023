@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\IndexController as AdminIndexController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Admin\CategoriesController as AdminCategoriesController;
+use App\Http\Controllers\Admin\ParserController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\UsersController as AdminUsersController;
+use App\Http\Controllers\Auth\Soc\LoginController as SocAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,11 +48,11 @@ Route::name('admin.')
     ->middleware(['auth', 'is_admin'])
     ->group(function () {
         Route::get('/', [AdminIndexController::class, 'index'])->name('index');
-
         Route::resource('/news', AdminNewsController::class)->except(['show']);
         Route::resource('/categories', AdminCategoriesController::class)->except(['show']);
-
         Route::resource('/users', AdminUsersController::class)->except(['show']);
+        Route::get('/parser', [ParserController::class, 'index'])->name('parser');
+
     });
 
 Route::name('comments.')
@@ -76,7 +78,12 @@ Route::name('requestInfo.')
         Route::delete('/delete/{requestInfo}', [RequestInfoController::class, 'delete'])->name('delete');
     });
 
-
 Auth::routes();
+
+Route::get('/auth/soc/{socialiteDriver}', [SocAuthController::class, 'login'])->name('socAuth')
+    ->middleware(['guest', 'soc.auth.driver']);
+Route::get('/auth/soc/{socialiteDriver}/response', [SocAuthController::class, 'response'])->name('socAuthResponse')
+    ->middleware(['guest', 'soc.auth.driver']);
+
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

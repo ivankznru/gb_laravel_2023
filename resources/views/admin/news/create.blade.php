@@ -56,7 +56,6 @@
                                     @endforelse
                                 </select>
                             </div>
-
                             <div class="form-group">
                                 <label for="author">Автор</label>
                                 @if ($errors->has('author'))

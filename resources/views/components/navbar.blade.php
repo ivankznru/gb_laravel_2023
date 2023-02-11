@@ -33,6 +33,9 @@
                         </li>
                     @endif
                 @else
+                    @if (strlen(trim(Auth::User()->avatar)) > 0)
+                        <li><img src="{{ Auth::User()->avatar }}" width="40" alt=""></li>
+                    @endif
                     <li class="nav-item dropdown">
                         <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>

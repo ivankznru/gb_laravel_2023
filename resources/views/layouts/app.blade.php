@@ -41,7 +41,6 @@
         </main>
         <x-footer></x-footer>
     </div>
-    @stack('js')
 </body>
 
 </html>

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\Categories\CreateRequest;
 use App\Http\Requests\Categories\EditRequest;
 use App\QueryBuilders\CategoriesQueryBuilder;
@@ -22,27 +21,24 @@ class CategoriesController extends Controller
         ]);
     }
 
-
-    public function create(Category $category)
-
+    public function create()
     {
+        $category = new Category();
         return view('admin.categories.create', [
             'category' => $category,
         ]);
     }
 
-    public function store(CreateRequest $request, Category $category)
+    public function store(CreateRequest $request,Category $category)
     {
-       $successMessage = 'The category was successfully updated!';
-       if ($category->id == null) {
+        $successMessage = 'The category was successfully updated!';
+        if ($category->id == null) {
             $successMessage = 'A category was added successfully!';
-       }
-
-        $category-> fill($request->validated());
+        }
+        $category->fill($request->all());
         $category->slug = Str::slug($category->title);
         $category->save();
         return redirect()->route('admin.categories.index')->with('success', $successMessage);
-
     }
 
     public function edit(Category $category)
@@ -59,7 +55,6 @@ class CategoriesController extends Controller
         if ($category->id == null) {
             $successMessage = 'A category was added successfully!';
         }
-
         $category->fill($request->all());
         $category->slug = Str::slug($category->title);
         $category->save();
@@ -72,4 +67,30 @@ class CategoriesController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'The category was successfully deleted!');
     }
 
+    /**
+     * Saves data for create and update
+     *
+     * @return void
+     */
+    private function saveData(Request $request, Category $category){
+        //TODO: check unique slug
+        $tableNameCategory = (new Category())->getTable();
+        $this->validate($request, [
+            'title' => 'required|min:3|max:20|unique:'.$tableNameCategory.',title',
+        ], [], [
+            'title' => 'Title',
+            'text' => 'Text',
+            'category_id' => "News category"
+        ]);
+
+        $successMessage = 'The category was successfully updated!';
+        if ($category->id == null) {
+            $successMessage = 'A category was added successfully!';
+        }
+
+        $category->fill($request->all());
+        $category->slug = Str::slug($category->title);
+        $category->save();
+        return redirect()->route('admin.categories.index')->with('success', $successMessage);
+    }
 }
