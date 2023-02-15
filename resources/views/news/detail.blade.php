@@ -21,7 +21,7 @@
                                     </div>
                                 @endif
                                 <div>
-                                    {{ $newsItem->text }}
+                                    {!! $newsItem->text !!}
                                 </div>
                             @else
                                 <i>-- This is a PRIVATE news item. Please register to see the content. --</i>

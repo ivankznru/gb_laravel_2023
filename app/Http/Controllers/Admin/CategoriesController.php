@@ -10,6 +10,8 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+
 
 class CategoriesController extends Controller
 {
@@ -35,6 +37,7 @@ class CategoriesController extends Controller
         if ($category->id == null) {
             $successMessage = 'A category was added successfully!';
         }
+
         $category->fill($request->all());
         $category->slug = Str::slug($category->title);
         $category->save();
@@ -48,13 +51,13 @@ class CategoriesController extends Controller
         ]);
     }
 
-
     public function update(EditRequest $request, Category $category)
     {
         $successMessage = 'The category was successfully updated!';
         if ($category->id == null) {
             $successMessage = 'A category was added successfully!';
         }
+
         $category->fill($request->all());
         $category->slug = Str::slug($category->title);
         $category->save();
@@ -67,30 +70,4 @@ class CategoriesController extends Controller
         return redirect()->route('admin.categories.index')->with('success', 'The category was successfully deleted!');
     }
 
-    /**
-     * Saves data for create and update
-     *
-     * @return void
-     */
-    private function saveData(Request $request, Category $category){
-        //TODO: check unique slug
-        $tableNameCategory = (new Category())->getTable();
-        $this->validate($request, [
-            'title' => 'required|min:3|max:20|unique:'.$tableNameCategory.',title',
-        ], [], [
-            'title' => 'Title',
-            'text' => 'Text',
-            'category_id' => "News category"
-        ]);
-
-        $successMessage = 'The category was successfully updated!';
-        if ($category->id == null) {
-            $successMessage = 'A category was added successfully!';
-        }
-
-        $category->fill($request->all());
-        $category->slug = Str::slug($category->title);
-        $category->save();
-        return redirect()->route('admin.categories.index')->with('success', $successMessage);
-    }
 }

@@ -12,9 +12,11 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class NewsController extends Controller
 {
+
     public function index(NewsQueryBuilder $newsQueryBuilder): View
     {
         return \view('admin.news.index', [
@@ -32,7 +34,7 @@ class NewsController extends Controller
         ]);
     }
 
-    public function store(CreateRequest $request, News $news)
+    public function store(CreateRequest $request,News $news)
     {
         $successMessage = 'The news item was successfully updated!';
         if ($news->id == null) {
@@ -72,4 +74,5 @@ class NewsController extends Controller
         $news->delete();
         return redirect()->route('admin.news.index')->with('success', 'The news item was successfully deleted!');
     }
+
 }

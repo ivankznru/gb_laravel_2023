@@ -26,7 +26,6 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ route('updateProfile') }}">Profile</a>
     </li>
-
 @endguest
 <li class="nav-item">
     <a class="nav-link" href="{{ route('comments.index') }}">{{ __('Comments') }}</a>

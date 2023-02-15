@@ -6,6 +6,8 @@
 
 import './bootstrap';
 import { createApp } from 'vue';
+//import { createStore } from 'vuex';
+//import './modules/ckeditor_loader';
 
 /**
  * Next, we will create a fresh Vue application instance. You may then begin
@@ -15,8 +17,11 @@ import { createApp } from 'vue';
 
 const app = createApp({});
 
-import ExampleComponent from './components/ExampleComponent.vue';
-app.component('example-component', ExampleComponent);
+
+import CKEditor from '@ckeditor/ckeditor5-vue';
+app.use(CKEditor);
+import CKEditorComponent from './components/CKEditorComponent.vue';
+app.component('ckeditor-component', CKEditorComponent);
 
 /**
  * The following block of code may be used to automatically register your

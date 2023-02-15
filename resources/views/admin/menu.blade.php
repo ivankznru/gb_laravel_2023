@@ -23,11 +23,18 @@
 <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.users.create') }}">[+] User</a>
 </li>
+
 <li class="nav-item">
-    <a class="nav-link" href="{{ route('updateProfile') }}">Profile</a>
+    <a class="nav-link" href="{{ route('admin.resources.index') }}">Resources</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('admin.resources.create') }}">[+] Resource</a>
 </li>
 
 <li class="nav-item">
     <a class="nav-link" href="{{ route('admin.parser') }}">Parse news</a>
 </li>
 
+<li class="nav-item">
+    <a class="nav-link" href="{{ route('updateProfile') }}">Profile</a>
+</li>

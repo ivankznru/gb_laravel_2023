@@ -21,6 +21,11 @@
                     @endif
 
                     {{ __('Here is a little description of our news aggregator....') }}
+                                        
+                    <div id="app">
+                        {{-- <file-manager-component></file-manager-component> --}}
+                    </div>
+                    
                 </div>
             </div>
         </div>

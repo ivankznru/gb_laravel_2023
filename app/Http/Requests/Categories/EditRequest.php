@@ -32,8 +32,6 @@ class EditRequest extends FormRequest
         $tableNameCategory = (new Category())->getTable();
         return [
             'title' => 'required|min:3|max:20|unique:'.$tableNameCategory.',title',
-            'text' => 'required|min:3',
-            'category_id' => "News category"
         ];
     }
 
